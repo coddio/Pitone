@@ -1,0 +1,27 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+while True:
+    x = 0
+    x = int(input())
+    l_a = []
+    l_b = []
+    if x >= 3:
+        for i in range(1, int(x)):
+            for n in range(int(x)):
+                m = i
+                a = m ** 2 - n ** 2
+                b = 2 * m * n
+                c = m ** 2 + n ** 2
+                if a > 0 and b > 0 and c > 0:
+                    print("Terna:(" + str(a) + "," + str(b) + "," + str(c) + ")")
+                    plt.plot([a, 0], [0, b], 'k-')
+                    plt.plot([0, 0], [0, b], 'k-')
+                    plt.plot([a, 0], [0, 0], 'k-')
+                    l_a.append(a)
+
+        print("  Sono state elaborate " + str(len(l_a)) + " terne")
+        plt.show()
+        break
+    else:
+        print("Inserisci un numero >=3")
