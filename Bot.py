@@ -5,7 +5,7 @@ import re
 
 
 browser=webdriver.Chrome('chromedriver.exe')
-
+#funzione che logga su twitter dati username e password
 def login(username,password):
     browser.get('https:/twitter.com/login')
 
@@ -16,7 +16,7 @@ def login(username,password):
     password_field.send_keys(password)
 
     password_field.send_keys(Keys.ENTER)
-
+#la funzione cerca un determinato hashtag su twitter dato e legge e salva in una lista un numero max di tweet procede poi a rifinire i tweet
 def readtweets(hashtag,max):
     browser.get('https://twitter.com/search?src=typd&q=%23'+hashtag)
     tweets = browser.find_elements_by_class_name('tweet-text')
@@ -58,6 +58,7 @@ def readtweets(hashtag,max):
         out+=el
 
     return out
+#crea un dizionario e assegna a ogni parola, presa una sola volta, della lista un valore dato dal numero di volte che compare
 
 def analyzelist(lst):
     dic = {}
@@ -68,6 +69,7 @@ def analyzelist(lst):
             dic[el]+=1
     return(dic)
 
+#salva il dizionario in un file negativo o positivo o lo aggiunge al file se giá esistente
 def savedata(gb,dic):
     try:
         if gb=='bad':
