@@ -5,6 +5,8 @@ import re
 
 
 browser=webdriver.Chrome('chromedriver.exe')
+
+
 #funzione che logga su twitter dati username e password
 def login(username,password):
     browser.get('https:/twitter.com/login')
@@ -16,6 +18,8 @@ def login(username,password):
     password_field.send_keys(password)
 
     password_field.send_keys(Keys.ENTER)
+
+
 #la funzione cerca un determinato hashtag su twitter dato e legge e salva in una lista un numero max di tweet procede poi a rifinire i tweet
 def readtweets(hashtag,max):
     browser.get('https://twitter.com/search?src=typd&q=%23'+hashtag)
@@ -58,8 +62,64 @@ def readtweets(hashtag,max):
         out+=el
 
     return out
-#crea un dizionario e assegna a ogni parola, presa una sola volta, della lista un valore dato dal numero di volte che compare
+#funzione simile a readtweets ma per google maps (NON ANCORA PRESENTE PARTE DI RIFINITURA STRINGA)
+def readmaps(place,ty,max):
+    la=place.split()
+    Url="https://www.google.com/maps/search/"
+    for el in la:
+       Url+=el
+    browser.get(Url)
+    delay(3)
+    href= browser.find_element_by_class_name('widget-pane-link')
+    href.click()
+    delay(2)
+    try:
+        combo = browser.find_element_by_class_name('section-tab-info-stats-button-flex')
+        combo.click()
+        delay(1)
+        if ty == "bad":
+            lowest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[4]')
+            lowest.send_keys(Keys.ENTER)
+        elif ty == "good":
+            highest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[3]/div[2]')
+            highest.send_keys(Keys.ENTER)
+    except:
+        combo = browser.find_element_by_class_name('section-dropdown-menu-button-open')
+        combo.click()
+        delay(1)
+        if ty == "bad":
+            lowest = browser.find_element_by_xpath('//*[@id=":j"]/div')
+            lowest.send_keys(Keys.ENTER)
+        elif ty == "good":
+            highest = browser.find_element_by_xpath('//*[@id=":i"]/div')
+            highest.send_keys(Keys.ENTER)
 
+    delay(2)
+    actionChain = webdriver.ActionChains(browser)
+    desel=browser.find_element_by_class_name('section-tab-info-stats-button-helper-text')
+    actionChain.move_to_element_with_offset(desel, 5, 2)
+    actionChain.click()
+    actionChain.perform()
+    rewiews = browser.find_elements_by_class_name('section-review-text')
+    while len(rewiews)<max:
+        actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
+        rewiews = browser.find_elements_by_class_name('section-review-text')
+    if len(browser.find_elements_by_class_name("section-expand-review"))!=0:
+        for el in browser.find_elements_by_class_name("section-expand-review"):
+            el.click()
+        rewiews = browser.find_elements_by_class_name('section-review-text')
+
+    out=[]
+    for fun in rewiews:
+        if fun.text != "":
+            out.append(fun.text)
+        if len(out)==max:
+            break
+    return out,len(out)
+
+
+
+#crea un dizionario e assegna a ogni parola, presa una sola volta, della lista un valore dato dal numero di volte che compare
 def analyzelist(lst):
     dic = {}
     for el in lst:
@@ -69,7 +129,8 @@ def analyzelist(lst):
             dic[el]+=1
     return(dic)
 
-#salva il dizionario in un file negativo o positivo o lo aggiunge al file se giá esistente
+
+#salvail dizionario in un file negativo o positivo o lo aggiunge al file se giá esistente
 def savedata(gb,dic):
     try:
         if gb=='bad':
@@ -99,8 +160,11 @@ def savedata(gb,dic):
 
     file.write(str(read))
 
+
+
+
 login('datruemenace@gmail.com', 'KarlOKonty')
 
-savedata('bad',analyzelist(readtweets('arrabbiato',500)))
+savedata('bad',analyzelist(readtweets('gobbi',500)))
 
 browser.close()
