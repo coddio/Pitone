@@ -79,20 +79,20 @@ def readmaps(place,ty,max):
         delay(1)
         if ty == "bad":
             lowest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[4]')
-            lowest.send_keys(Keys.ENTER)
+            lowest.click()
         elif ty == "good":
             highest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[3]/div[2]')
-            highest.send_keys(Keys.ENTER)
+            highest.click()
     except:
         combo = browser.find_element_by_class_name('section-dropdown-menu-button-open')
         combo.click()
         delay(1)
         if ty == "bad":
             lowest = browser.find_element_by_xpath('//*[@id=":j"]/div')
-            lowest.send_keys(Keys.ENTER)
+            lowest.click()
         elif ty == "good":
             highest = browser.find_element_by_xpath('//*[@id=":i"]/div')
-            highest.send_keys(Keys.ENTER)
+            highest.click()
 
     delay(2)
     actionChain = webdriver.ActionChains(browser)
