@@ -85,6 +85,12 @@ def readmaps(place,ty,max):
         elif ty == "good":
             highest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[3]/div[2]')
             highest.click()
+        sleep(2)
+        actionChain = webdriver.ActionChains(browser)
+        desel = browser.find_element_by_class_name('section-tab-info-stats-button-helper-text')
+        actionChain.move_to_element_with_offset(desel, 5, 2)
+        actionChain.click()
+        actionChain.perform()
     except:
         combo = browser.find_element_by_class_name('section-dropdown-menu-button-caption')
         combo.click()
@@ -95,6 +101,12 @@ def readmaps(place,ty,max):
         elif ty == "good":
             highest = browser.find_element_by_xpath('//*[@id=":i"]/div')
             highest.click()
+        sleep(2)
+        actionChain = webdriver.ActionChains(browser)
+        desel = browser.find_element_by_class_name('section-dropdown-menu-button-caption')
+        actionChain.move_to_element_with_offset(desel, 5, 2)
+        actionChain.click()
+        actionChain.perform()
 
     sleep(2)
     actionChain = webdriver.ActionChains(browser)
