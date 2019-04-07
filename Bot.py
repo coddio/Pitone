@@ -71,7 +71,7 @@ def readmaps(place,ty,max):
     for el in la:
        Url+=el
     browser.get(Url)
-    sleep(3)
+    sleep(5)
     href= browser.find_element_by_class_name('widget-pane-link')
     href.click()
     sleep(2)
@@ -122,12 +122,21 @@ def readmaps(place,ty,max):
             text = re.sub(r'[^a-zàèéòàùì ]', ' ', text)
             text = re.sub(r"[\s]+", " ", text)
 
-            out.append(text)
+            out += text.split()
         if len(out)==max:
             break
     return out
 
+def mapsboth(place,max):
+    out=[]
+    out.append(readmaps(place,'good',max))
+    sleep(1)
+    out.append(readmaps(place, 'bad', max))
+    return out
 
+def analyzesaveboth(lst):
+    savedata('good',analyzelist(lst[0]))
+    savedata('bad', analyzelist(lst[1]))
 
 #crea un dizionario e assegna a ogni parola, presa una sola volta, della lista un valore dato dal numero di volte che compare
 def analyzelist(lst):
@@ -174,7 +183,8 @@ def savedata(gb,dic):
 
 
 
-
-savedata('bad',analyzelist(readmaps("mcdonalds milano duomo","bad",50)))
+lst = mapsboth("mcdonalds milano duomo",50)
+print (lst)
+analyzesaveboth(lst)
 
 browser.close()
