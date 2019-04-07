@@ -62,21 +62,23 @@ def readtweets(hashtag,max):
         out+=el
 
     return out
+
 #funzione simile a readtweets ma per google maps (NON ANCORA PRESENTE PARTE DI RIFINITURA STRINGA)
 def readmaps(place,ty,max):
+    regexurl = r"(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?"
     la=place.split()
     Url="https://www.google.com/maps/search/"
     for el in la:
        Url+=el
     browser.get(Url)
-    delay(3)
+    sleep(3)
     href= browser.find_element_by_class_name('widget-pane-link')
     href.click()
-    delay(2)
+    sleep(2)
     try:
         combo = browser.find_element_by_class_name('section-tab-info-stats-button-flex')
         combo.click()
-        delay(1)
+        sleep(1)
         if ty == "bad":
             lowest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[4]')
             lowest.click()
@@ -84,9 +86,9 @@ def readmaps(place,ty,max):
             highest = browser.find_element_by_xpath('//*[@id="action-menu"]/div[3]/div[2]')
             highest.click()
     except:
-        combo = browser.find_element_by_class_name('section-dropdown-menu-button-open')
+        combo = browser.find_element_by_class_name('section-dropdown-menu-button-caption')
         combo.click()
-        delay(1)
+        sleep(1)
         if ty == "bad":
             lowest = browser.find_element_by_xpath('//*[@id=":j"]/div')
             lowest.click()
@@ -94,7 +96,7 @@ def readmaps(place,ty,max):
             highest = browser.find_element_by_xpath('//*[@id=":i"]/div')
             highest.click()
 
-    delay(2)
+    sleep(2)
     actionChain = webdriver.ActionChains(browser)
     desel=browser.find_element_by_class_name('section-tab-info-stats-button-helper-text')
     actionChain.move_to_element_with_offset(desel, 5, 2)
@@ -112,10 +114,18 @@ def readmaps(place,ty,max):
     out=[]
     for fun in rewiews:
         if fun.text != "":
-            out.append(fun.text)
+            text=fun.text.lower()
+            # pulizia della stringa
+            re.sub(r'\s', ' ', text)
+            text = re.sub(r"[#@][^\s]+", "", text)
+            text = re.sub(regexurl, "", text)
+            text = re.sub(r'[^a-zàèéòàùì ]', ' ', text)
+            text = re.sub(r"[\s]+", " ", text)
+
+            out.append(text)
         if len(out)==max:
             break
-    return out,len(out)
+    return out
 
 
 
@@ -163,8 +173,8 @@ def savedata(gb,dic):
 
 
 
-login('datruemenace@gmail.com', 'KarlOKonty')
 
-savedata('bad',analyzelist(readtweets('gobbi',500)))
+
+savedata('bad',analyzelist(readmaps("mcdonalds milano duomo","bad",50)))
 
 browser.close()
